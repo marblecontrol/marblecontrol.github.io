@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Material Editing in CLIP Space">
+  <meta property="og:title" content="Material Editing in CLIP Space"/>
+  <meta property="og:description" content="Material Editing in CLIP Space"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+
+
+  <title>Material Editing in CLIP Space</title>
+
+
+  <style>
+  .arrow-container {
+    display: flex;
+    align-items: center;
+    font-family: Arial, sans-serif;
+  }
+
+  .arrow-left {
+    content: "";
+    display: block;
+    width: 50px; /* Length of the left part of the arrow */
+    height: 2px; /* Thickness of the arrow */
+    background-color: black;
+  }
+
+  .arrow-text {
+    margin: 0 10px;
+    padding: 5px 10px;
+    border: 2px solid black; /* Cool box border */
+    background-color: #f0f0f0; /* Light grey background */
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2); /* Subtle shadow for depth */
+    border-radius: 5px; /* Rounded corners for the box */
+  }
+
+  .arrow-right {
+    content: "";
+    display: block;
+    width: 50px; /* Length of the right part of the arrow */
+    height: 2px; /* Thickness of the arrow */
+    background-color: black;
+    position: relative;
+  }
+
+  .arrow-right:after {
+    content: "";
+    position: absolute;
+    top: -5px; /* Adjust to align with the thickness of the arrow */
+    right: 0;
+    border-left: 10px solid black;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+  }
+    .gallery-container {
+      display: flex; /* Makes the two main containers sit side by side */
+      justify-content: center; /* Centers the containers horizontally */
+      flex-wrap: wrap; /* Allows containers to wrap on smaller screens */
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column; /* Aligns the inner columns vertically */
+      margin: 20px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
+    }
+
+    .image-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .source-img {
+      width: 80px;
+      margin: 20px;
+      cursor: pointer;
+    }
+
+    .target-img, .ref-img {
+      width: 40%; /* Adjust this percentage based on desired width relative to its container */
+      margin: 5px;
+      display: none; /* Keep your initial setup */
+    }
+
+    @media (max-width: 768px) {
+      .target-img {
+        width: 100%; /* Full width on smaller screens */
+      }
+    }
+
+    .target-img {
+      display: none; /* Hide target images by default */
+    }
+
+    .active {
+      display: block; /* Show active target image */
+    }
+
+    .enlarge {
+      transform: scale(1.3);
+      transition: transform 0.4s;
+    }
+
+    .ref-img {
+      display: block; /* Always display reference images */
+      cursor: default;
+
+    }
+
+    .title {
+      font-size: 16px;
+      margin-bottom: 5px;
+
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+</head>
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">MARBLE: Material Recomposition and Blending in CLIP-Space</h1>
+            <!-- <h2> <font size="+2.5"> Tech Report </font></h1> -->
+              <!-- <br> -->
+          <div class="is-size-5 publication-authors">
+            <!-- Paper authors -->
+            <span class="author-block">
+              <a href="https://ttchengab.github.io" target="_blank">Ta-Ying Cheng</a><sup>1,2</sup>,</span>
+              <span class="author-block">
+                <a href="https://prafullsharma.net" target="_blank">Prafull Sharma</a><sup>3</sup>,</span>
+                      <span class="author-block">
+                        <a href="https://markboss.me" target="_blank">Mark Boss</a><sup>2</sup>,</span>
+
+                          <span class="author-block">
+                            <a href="https://varunjampani.github.io" target="_blank">Varun Jampani</a><sup>2</sup></span>
+
+                </span>
+
+            </div>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup> University of Oxford<br><sup>2</sup> Stability AI<br><sup>3</sup> MIT CSAIL</span>
+            </div>
+
+<br>
+
+
+
+
+            <span class="link-block">
+              <a href="https://arxiv.org/abs/2404.06425" target="_blank"
+              class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="ai ai-arxiv"></i>
+              </span>
+              <span>Paper</span>
+            </a>
+          </span>
+
+            <span class="link-block">
+              <a href="https://github.com/ttchengab/zest_code" target="_blank"
+              class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="fab fa-github"></i>
+              </span>
+              <span>Code</span>
+            </a>
+          </span>
+
+
+          </a>
+        </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Teaser video-->
+<section class="hero teaser">
+  <div class="container">
+    <div class="hero-body">
+
+
+          <img src="static/images/teaser.jpg" alt="MARBLE Overview"/>
+
+      <h2 class="subtitle has-text-centered">
+        <b>TL;DR:</b> We present MARBLE, a method for performing various material editing in images
+         such as material blending (top row) and parametric control of material properties (bottom row) leveraging
+         CLIP-space and pre-trained generative models.
+      </h2>
+    </div>
+  </div>
+</section>
+<!-- End teaser video -->
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3 has-text-centered">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Editing materials of objects in images based on exemplar images is an active area of research in computer vision
+            and graphics. We propose MARBLE, a method for performing material blending and recomposing fine-grained material
+            properties by finding material embeddings in CLIP-space and using that to control pre-trained text-to-image models.
+            We improve exemplar-based material editing by finding a block in the denoising UNet responsible for material
+            attribution. Given two material exemplar-images, we find directions in the CLIP-space for blending the materials.
+            Further, we can achieve parametric control over fine-grained material attributes such as roughness, metallic,
+            transparency, and glow using a shallow network to predict the direction for the desired material attribute change.
+            We perform qualitative and quantitative analysis to demonstrate the efficacy of our proposed method. We also present
+            the ability of our method to perform multiple edits in a single forward pass and applicability to painting.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+
+
+
+
+<!-- End youtube video -->
+<section class="hero is-small">
+  <div class="hero-body">
+      <h2 class="title is-3 has-text-centered">Result Gallery</h2>
+
+
+
+    <div class="container">
+    <h4 class="title is-4 ">🪄  Parametric Control on multiple material properties </h4>
+           <img src="static/images/slider_results.jpg" alt="Material Parametric Control"/>
+           <div class="content has-text-justified">
+             <p class="subtitle has-text-centered">
+               <br>
+               Given a context image, MARBLE can reconstuct an image while tuning material properties such as roughness,
+               metallic, transparency and glow. This parametric control can also be combined with a new material exemplar
+               applied onto the object within the context.
+
+             </p>
+        </div>
+      </div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <div class="container">
+      <h4 class="title is-4 ">🔮 Make things transparent</h4>
+           <img src="static/images/transparency.gif" alt="Transparency Control"/>
+           <div class="content has-text-justified">
+             <br>
+             <p class="subtitle has-text-centered">
+               Given a context image, MARBLE can reconstuct an image while tuning material properties such as roughness,
+               metallic, transparency and glow. This parametric control can also be combined with a new material exemplar
+               applied onto the object within the context.
+
+             </p>
+        </div>
+      </div>
+
+
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+
+      <div class="container">
+        <h4 class="title is-4 ">🎨 Apply material control to art </h4>
+             <img src="static/images/style_quals.jpg" alt="Material Control on Images of Different Styles"/>
+             <div class="content has-text-justified">
+               <p class="subtitle has-text-centered">
+                 Since MARBLE does not require fine-tuning on the diffusion model nor the text encoder, it preserves much of
+                 the generative capabilities which allows the material controls to be applied to various styles of arts.
+
+               </p>
+          </div>
+        </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+<!--End BibTex citation -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{cheng2024marble,
+  title={MARBLE: Material Recomposition and Blending in CLIP-Space},
+  author={Cheng, Ta-Ying and Sharma, Prafull and Boss, Mark and Jampani, Varun},
+  journal={CVPR},
+  year={2025}
+}</code></pre>
+  </div>
+</section>
+
+  <footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>.
+            You are free to borrow the of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Statcounter tracking code -->
+
+<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+
+    <!-- End of Statcounter Code -->
+
+  </body>
+  </html>
